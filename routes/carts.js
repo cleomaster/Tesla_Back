@@ -1,9 +1,10 @@
 const express = require('express');
 const router = express.Router();
 const Carts = require('../models/Carts');
+const Products = require('../models/Products');
 
-router.get('/carts', async (req, res) => {
-    res.send("Carts page");
+router.post('/add/:id', async (req, res) => {
+  
 })
 
 module.exports = router;
