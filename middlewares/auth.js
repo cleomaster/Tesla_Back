@@ -5,7 +5,7 @@ function auth(req, res, next) {
     if (!token) return res.status(401).send("No token provided");
 
     try {
-        const decoded = jwt.verify(token, process.env.JWT);
+        const decoded = jwt.verify(token, process.env.JWT || "jwtPrivateKey" );
         req.user = decoded;
         next();
     } catch (ex) {
