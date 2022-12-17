@@ -9,4 +9,12 @@ router.get("/", async (req, res) => {
     res.send(products);
 })
 
+router.get("/:id", async (req, res) => {
+    const { dataValues: product } = await Products.findOne({
+        where: { product_id: req.params.id }
+    }) || {}
+    res.send(product);
+})
+
+
 module.exports = router;

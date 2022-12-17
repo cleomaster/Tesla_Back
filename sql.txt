@@ -1,1 +1,58 @@
-SQL REMOVED 
+INSERT INTO cartitems (cart_id, product_id, quantity, price)
+VALUES (1, 1, 2, 1000), (1, 2, 3, 2000)
+
+INSERT INTO carts (cart_id, user_id) VALUES (1, 6);
+
+DROP TABLE users;
+
+CREATE TABLE users (
+id INT AUTO_INCREMENT PRIMARY KEY,
+name VARCHAR(50) NOT NULL,
+email VARCHAR(50) NOT NULL,
+password VARCHAR(50) NOT NULL
+)
+
+DROP TABLE products;
+
+
+INSERT INTO products (product_id, name, description, price)
+VALUES (1, "Model X", "This is Model X", 1000);
+INSERT INTO products (product_id, name, description, price)
+VALUES (2, "Model Y", "This is Model Y", 2000);
+INSERT INTO products (product_id, name, description, price)
+VALUES (3, "Model S", "This is Model S", 3000);
+
+CREATE TABLE products (
+product_id INT AUTO_INCREMENT PRIMARY KEY, 
+name VARCHAR(50) NOT NULL, 
+description VARCHAR(50) NOT NULL,
+price FLOAT NOT NULL
+)
+
+DROP TABLE carts;
+
+CREATE TABLE carts (
+cart_id INT AUTO_INCREMENT PRIMARY KEY,
+user_id INT,
+FOREIGN KEY (user_id) REFERENCES users(user_id)
+)
+
+DROP TABLE CartItems;
+CREATE TABLE CartItems (
+cart_id INT NOT NULL,
+product_id INT NOT NULL,
+quantity INT NOT NULL,
+price INT NOT NULL,
+PRIMARY KEY (cart_id, product_id),
+FOREIGN KEY (cart_id) REFERENCES carts(cart_id),
+FOREIGN KEY (product_id) REFERENCES products(product_id)
+)
+
+DROP TABLE orders;
+
+CREATE TABLE orders (
+order_id INT NOT NULL AUTO_INCREMENT PRIMARY KEY,
+cart_id INT NOT NULL,
+placed_at date NOT NULL,
+FOREIGN KEY (cart_id) REFERENCES carts(cart_id)
+)

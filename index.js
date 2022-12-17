@@ -5,10 +5,12 @@ const users = require('./routes/users');
 const carts = require('./routes/carts');
 const CartItems = require('./models/CartItems');
 const orders = require('./models/Orders');
+const Products = require('./models/Products');
+const cors = require("cors");
 const express = require('express');
 const app = express();
 
-
+app.use(cors());
 app.use(express.json());
 app.use('/api/products', products);
 app.use('/api/users', users);
@@ -21,11 +23,10 @@ try {
   } catch (error) {
     console.error('Unable to connect to the database:', error);
   }
+  seed();
 }
 
 InitiateConnection();
 
-
-
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));

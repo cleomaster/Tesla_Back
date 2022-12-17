@@ -5,15 +5,16 @@ const Carts = require('../models/Carts');
 const CartItems = require("../models/CartItems");
 const Orders = require('../models/Orders');
 const auth = require("../middlewares/auth");
+const db = require('../config/db');
 
 
-router.get("/mycart", async (req, res) => {
+router.get("/mycart", auth, async (req, res) => {
 
     const { dataValues: cart } = await Carts.findOne({
-        where: { user_id: 1 }
+        where: { user_id: req.user.user_id }
     }) || {}
 
-    if(!cart) return res.send("Cart is empty");
+    if(!cart) return res.send({});
     console.log(cart.cart_id);
     let cartItems = await CartItems.findAll({
         where: {
@@ -32,7 +33,7 @@ router.post('/add/:id', auth, async (req, res) => {
     if(!product) return res.send("Product does not exist.");
 
     const { dataValues: cart } = await Carts.findOne({
-        where: { user_id: 2 }
+        where: { user_id: req.user.user_id}
     }) || {}
 
     if (!cart) {
@@ -63,7 +64,7 @@ router.post('/add/:id', auth, async (req, res) => {
     res.send("Added to cart");
 })
 
-router.post("/remove/:id", async (req, res) => {
+router.post("/remove/:id", auth, async (req, res) => {
 
     const { dataValues: product } = await Products.findOne({
         where: { product_id: req.params.id }
@@ -72,7 +73,7 @@ router.post("/remove/:id", async (req, res) => {
     if(!product) return res.send("Product does not exist.");
 
     const { dataValues: cart } = await Carts.findOne({
-        where: { user_id: 2 }
+        where: { user_id: req.user.user_id }
     }) || {}
 
     if(!cart) return res.send("Cart does not exist.");
@@ -104,7 +105,7 @@ router.post("/remove/:id", async (req, res) => {
 
 })
 
-router.put("/decrement/:id", async (req, res) => {
+router.put("/decrement/:id", auth, async (req, res) => {
     const { dataValues: product } = await Products.findOne({
         where: { product_id: req.params.id }
     }) || {}
@@ -112,7 +113,7 @@ router.put("/decrement/:id", async (req, res) => {
     if(!product) return res.send("Product does not exist.");
 
     const { dataValues: cart } = await Carts.findAll({
-        where: { user_id: 2 }
+        where: { user_id: req.user.user_id }
     }) || {}
 
     if(!cart) return res.send("Cart does not exist.");
@@ -153,6 +154,25 @@ router.put("/decrement/:id", async (req, res) => {
       }
 
       res.send("Operation successful");
+})
+
+router.get("/total", auth, async (req, res) => {
+
+    const { dataValues: cart } = await Carts.findOne({
+        where: { user_id: req.user.user_id }
+    }) || {}
+
+    if(!cart) return res.send({total: 0});
+
+    const total = await CartItems.findOne({
+        where: {
+            cart_id: cart.cart_id
+        },
+        group : ['cart_id'],
+        attributes: [[db.fn('sum', db.col('price')), 'total']],
+        raw: true
+      }) || {total: 0}
+      res.send(total);
 })
 
 module.exports = router;
