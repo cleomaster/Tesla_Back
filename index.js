@@ -16,6 +16,10 @@ app.use('/api/products', products);
 app.use('/api/users', users);
 app.use('/api/carts', carts);
 
+app.get("/", (req, res) => {
+  res.send("hello");
+})
+
 const InitiateConnection = async () => {
 try {
     await db.authenticate();
@@ -27,6 +31,8 @@ try {
 }
 
 InitiateConnection();
+
+
 
 const PORT = process.env.PORT || 9000;
 app.listen(PORT, () => console.log(`Listening on PORT ${PORT}`));
