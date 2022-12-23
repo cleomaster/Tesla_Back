@@ -1,7 +1,7 @@
 const db = require('../config/db');
 const Users = require('../models/Users');
 const Products = require('../models/Products');
-const Carts = require('../models/Carts');
+const Carts = require('../models/carts.js');
 const CartItems = require('../models/CartItems');
 const Orders = require('../models/Orders');
 
